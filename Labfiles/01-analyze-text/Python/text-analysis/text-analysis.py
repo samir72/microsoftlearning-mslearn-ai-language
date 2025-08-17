@@ -8,8 +8,8 @@ def main():
     try:
         # Get Configuration Settings
         load_dotenv()
-        ai_endpoint = os.getenv('AI_SERVICE_ENDPOINT')
-        ai_key = os.getenv('AI_SERVICE_KEY')
+        ai_endpoint = os.getenv('AT_AI_SERVICE_ENDPOINT')
+        ai_key = os.getenv('AT_AI_SERVICE_KEY')
 
         # Create client using endpoint and key
 
