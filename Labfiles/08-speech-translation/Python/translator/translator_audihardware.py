@@ -48,13 +48,9 @@ def Translate(targetLanguage):
     translation = ''
 
     # Translate speech
-    #current_dir = os.getcwd()
-    audioFile = 'station.wav'
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    audioFilepath = os.path.join(current_dir, audioFile)
-    audio_config_in = speech_sdk.AudioConfig(filename=audioFilepath)
+    audio_config_in = speech_sdk.AudioConfig(use_default_microphone=True)
     translator = speech_sdk.translation.TranslationRecognizer(translation_config, audio_config = audio_config_in)
-    print("Getting speech from file...")
+    print("Speak now...")
     result = translator.recognize_once_async().get()
     print('Translating "{}"'.format(result.text))
     translation = result.translations[targetLanguage]
@@ -69,13 +65,15 @@ def Translate(targetLanguage):
             "hi": "hi-IN-MadhurNeural"
     }
     speech_config.speech_synthesis_voice_name = voices.get(targetLanguage)
-    audio_config_out = speech_sdk.audio.AudioConfig(filename=output_file)
+    audio_config_out = speech_sdk.audio.AudioOutputConfig(use_default_speaker=True)
     speech_synthesizer = speech_sdk.SpeechSynthesizer(speech_config, audio_config_out)
     speak = speech_synthesizer.speak_text_async(translation).get()
     if speak.reason != speech_sdk.ResultReason.SynthesizingAudioCompleted:
         print(speak.reason)
-    else:
-        print("Spoken output saved in " + output_file)
+    if speak.reason == speech_sdk.ResultReason.Canceled:
+        cancellation = speak.cancellation_details
+        print(cancellation.reason)
+        print(cancellation.error_details)
 
 
 
